@@ -7,6 +7,8 @@
 
 ## Example
 
+Swift unsupported!
+
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
@@ -22,7 +24,7 @@ pod 'ObjCException'
 
 ## Author
 
-JieLiang Ma, majieliang@didiglobal.com
+JieLiang Ma, majieliang@yeah.net
 
 ## License
 

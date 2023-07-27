@@ -30,13 +30,13 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '10.0'
 
-  s.source_files = 'ObjCException/Classes/**/*'
+  s.source_files = 'ObjCException/Classes/**/*.{h,hpp,m,mm}'
   
   # s.resource_bundles = {
   #   'ObjCException' => ['ObjCException/Assets/*.png']
   # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+  s.public_header_files = 'ObjCException/Classes/ObjCException.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

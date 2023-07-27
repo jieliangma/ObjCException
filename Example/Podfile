@@ -1,14 +1,7 @@
 use_frameworks!
 
-platform :ios, '10.0'
+platform :ios, '12.0'
 
 target 'ObjCException_Example' do
   pod 'ObjCException', :path => '../'
-
-  target 'ObjCException_Tests' do
-    inherit! :search_paths
-
-    pod 'Specta'
-    pod 'Expecta'
-  end
 end

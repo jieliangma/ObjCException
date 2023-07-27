@@ -7,11 +7,11 @@
 //
 
 @import UIKit;
-#import "OEAppDelegate.h"
+#import "OCEAppDelegate.h"
 
 int main(int argc, char * argv[])
 {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([OEAppDelegate class]));
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([OCEAppDelegate class]));
     }
 }
