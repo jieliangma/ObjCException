@@ -1,5 +1,5 @@
 //
-//  OEViewController.h
+//  OCEAppDelegate.h
 //  ObjCException
 //
 //  Created by JieLiang Ma on 07/25/2023.
@@ -8,6 +8,8 @@
 
 @import UIKit;
 
-@interface OEViewController : UIViewController
+@interface OCEAppDelegate : UIResponder <UIApplicationDelegate>
+
+@property (strong, nonatomic) UIWindow *window;
 
 @end

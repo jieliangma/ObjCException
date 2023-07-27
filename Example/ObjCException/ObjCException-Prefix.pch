@@ -10,7 +10,7 @@
 #warning "This project uses features only available in iOS SDK 5.0 and later."
 #endif
 
-#ifdef __OBJC__
+#if defined(__OBJC__) && !defined(__cplusplus)
     @import UIKit;
     @import Foundation;
 #endif
