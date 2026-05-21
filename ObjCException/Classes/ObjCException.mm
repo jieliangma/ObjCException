@@ -279,7 +279,7 @@ struct finally_runner {
 
 }  // namespace
 
-void oce_try_catch(oce_block_t try_block, oce_catch_block_t catch_block) {
+void oce_try_catch_impl(oce_block_t try_block, oce_catch_block_t catch_block) {
     cpp_throw_guard _g;
     @try {
         try_block();
@@ -288,9 +288,9 @@ void oce_try_catch(oce_block_t try_block, oce_catch_block_t catch_block) {
     }
 }
 
-void oce_try_catch_finally(oce_block_t try_block,
-                           oce_catch_block_t _Nullable catch_block,
-                           oce_block_t _Nullable finally_block) {
+void oce_try_catch_finally_impl(oce_block_t try_block,
+                                oce_catch_block_t _Nullable catch_block,
+                                oce_block_t _Nullable finally_block) {
     cpp_throw_guard _g;
     finally_runner _f(finally_block);
     @try {

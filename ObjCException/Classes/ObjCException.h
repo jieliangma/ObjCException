@@ -90,6 +90,12 @@ extern "C" {
 // `objc_exception_throw` cannot find a landing pad.
 //   - DEBUG:   `@autoreleasepool {}` is enough.
 //   - RELEASE: an empty `@try {} @catch (...) {}` is required after DCE.
+//
+// Callers do NOT need to invoke this macro manually — `oce_try_catch` and
+// `oce_try_catch_finally` below are themselves macros that embed it at the
+// call site, so the surrounding function automatically gets unwind tables.
+// The standalone macro is kept exposed for the rare case of marking a
+// function that calls `objc_exception_throw` through some other path.
 #if !defined(OCE_FORCE_UNWIND_TABLES)
 #   if DEBUG
 #       define OCE_FORCE_UNWIND_TABLES @autoreleasepool {}
@@ -99,13 +105,29 @@ extern "C" {
 #endif
 
 FOUNDATION_EXPORT
-void oce_try_catch(oce_block_t try_block,
-                   oce_catch_block_t catch_block);
+void oce_try_catch_impl(oce_block_t try_block,
+                        oce_catch_block_t catch_block);
 
 FOUNDATION_EXPORT
-void oce_try_catch_finally(oce_block_t try_block,
-                           oce_catch_block_t _Nullable catch_block,
-                           oce_block_t _Nullable finally_block);
+void oce_try_catch_finally_impl(oce_block_t try_block,
+                                oce_catch_block_t _Nullable catch_block,
+                                oce_block_t _Nullable finally_block);
+
+// Function-like macros that embed `OCE_FORCE_UNWIND_TABLES` at the call
+// site so the surrounding function gets unwind tables emitted automatically.
+// Wrapped in `do { ... } while (0)` so the expansion behaves like a single
+// statement in any control-flow context.
+#define oce_try_catch(try_block, catch_block) \
+    do { \
+        OCE_FORCE_UNWIND_TABLES \
+        oce_try_catch_impl((try_block), (catch_block)); \
+    } while (0)
+
+#define oce_try_catch_finally(try_block, catch_block, finally_block) \
+    do { \
+        OCE_FORCE_UNWIND_TABLES \
+        oce_try_catch_finally_impl((try_block), (catch_block), (finally_block)); \
+    } while (0)
 
 #ifdef __cplusplus
 }

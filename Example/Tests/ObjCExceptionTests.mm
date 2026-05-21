@@ -195,7 +195,6 @@ struct DestructorProbe {
 // Outer = oce_try_catch (cpp_throw), inner = OCEException.catching (longjmp_).
 // Inner consumes the signal via siglongjmp; outer's catch must NOT fire.
 - (void)testCrossTier_cppOuter_longjmpInner_signalCaughtByInner {
-    OCE_FORCE_UNWIND_TABLES
     __block NSException *innerE = nil;
     __block NSException *outerE = nil;
     __block BOOL outerBodyCompleted = NO;
@@ -218,7 +217,6 @@ struct DestructorProbe {
 // Inner runs clean; outer raises an NSException afterwards — outer's @catch
 // should fire, proving the cpp_throw frame is still on top after inner pops.
 - (void)testCrossTier_cppOuter_longjmpInner_outerRaisesAfter {
-    OCE_FORCE_UNWIND_TABLES
     __block NSException *outerE = nil;
     oce_try_catch(^{
         NSException *innerE = [OCEException catching:^{
@@ -245,7 +243,6 @@ struct DestructorProbe {
 // active catch frame depending on cumulative signal traffic earlier in the
 // test run; pthread_kill is per-thread by definition.
 - (void)testCrossTier_longjmpOuter_cppInner_signalCaughtByInner {
-    OCE_FORCE_UNWIND_TABLES
     // Defensive unblock: on iOS Simulator on Apple Silicon, prior tests in
     // the suite that called raise(SIGABRT) leave the test thread's mask
     // with SIGABRT blocked, even after the matching handler has finished.
@@ -281,7 +278,6 @@ struct DestructorProbe {
 // when the outer scope exits normally — siglongjmp's lack of unwind in the
 // inner frame doesn't affect the outer scope's automatic storage.
 - (void)testCrossTier_cppOuter_longjmpInner_outerScopeDestructorRuns {
-    OCE_FORCE_UNWIND_TABLES
     std::atomic<int> dtorCount{0};
     std::atomic<int> *dtorCountPtr = &dtorCount;
     __block NSException *innerE = nil;
@@ -404,7 +400,6 @@ struct DestructorProbe {
 #pragma mark - Tier 2: C API — ObjC/C++ only
 
 - (void)testCAPI_oce_try_catch_NSException {
-    OCE_FORCE_UNWIND_TABLES
     __block NSException *captured = nil;
     oce_try_catch(^{
         [NSException raise:@"CAPI" format:@"hi"];
@@ -416,7 +411,6 @@ struct DestructorProbe {
 }
 
 - (void)testCAPI_oce_try_catch_signal {
-    OCE_FORCE_UNWIND_TABLES
     __block NSException *captured = nil;
     oce_try_catch(^{
         raise(SIGABRT);
@@ -428,7 +422,6 @@ struct DestructorProbe {
 }
 
 - (void)testCAPI_finally_success {
-    OCE_FORCE_UNWIND_TABLES
     __block int finallyCount = 0;
     oce_try_catch_finally(^{
         // success
@@ -439,7 +432,6 @@ struct DestructorProbe {
 }
 
 - (void)testCAPI_finally_NSException {
-    OCE_FORCE_UNWIND_TABLES
     __block int finallyCount = 0;
     __block NSException *captured = nil;
     oce_try_catch_finally(^{
@@ -454,7 +446,6 @@ struct DestructorProbe {
 }
 
 - (void)testCAPI_finally_signal {
-    OCE_FORCE_UNWIND_TABLES
     __block int finallyCount = 0;
     __block NSException *captured = nil;
     oce_try_catch_finally(^{
@@ -469,7 +460,6 @@ struct DestructorProbe {
 }
 
 - (void)testCAPI_cppDestructorRunsOnSignalUnwind {
-    OCE_FORCE_UNWIND_TABLES
     std::atomic<int> dtorCount{0};
     std::atomic<int> *dtorCountPtr = &dtorCount;
     __block NSException *captured = nil;
@@ -486,7 +476,6 @@ struct DestructorProbe {
 }
 
 - (void)testCAPI_cppDestructorRunsOnNSExceptionUnwind {
-    OCE_FORCE_UNWIND_TABLES
     std::atomic<int> dtorCount{0};
     std::atomic<int> *dtorCountPtr = &dtorCount;
     __block NSException *captured = nil;
