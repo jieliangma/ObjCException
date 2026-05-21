@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: pod lib lint
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint podspec
+        run: pod lib lint --allow-warnings
+
+  build:
+    name: Build Example app
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pods
+        working-directory: Example
+        run: pod install
+      - name: Build
+        working-directory: Example
+        run: |
+          set -o pipefail && xcodebuild build \
+            -workspace ObjCException.xcworkspace \
+            -scheme ObjCException-Example \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+            | xcpretty

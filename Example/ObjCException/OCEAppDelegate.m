@@ -13,13 +13,13 @@
 @implementation OCEAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-    oce_set_caught_exception_handler(^(NSException * _Nonnull exception) {
+    [OCEException setCaughtExceptionHandler:^(NSException * _Nonnull exception) {
         NSLog(@"Got exception:(%@), stack depth:%lu", exception.name, [[exception callStackSymbols] count]);
-//        NSLog(@"%@", [exception callStackSymbols]);
-    });
-    oce_enable_objc_exception();
-    
+    }];
+    int err = [OCEException enable];
+    if (err != 0) {
+        NSLog(@"OCEException enable failed: %d (%s)", err, strerror(err));
+    }
     return YES;
 }
 

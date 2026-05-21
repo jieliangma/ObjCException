@@ -13,24 +13,19 @@ public class SwiftCrash: NSObject {
     @objc public static func crash() {
         doCrash()
     }
-    
+
+    /// Force-unwrap nil triggers Swift runtime → abort() → SIGABRT.
+    /// `OCEException.catching` uses siglongjmp internally so the escape
+    /// works regardless of the Swift runtime frames between the crash
+    /// site and the catch site.
     public static func doCrash() {
-//        oce_try_catch({
-//            let nullable: String? = nil
-//            let string: String
-//            string = nullable!
-//            print(string)
-//        }, { error in
-//            print(error)
-//        })
-        
-        // x86_64 的模拟器通过，真机失败。
-//        oce_try_catch({
-//            let nullable: String? = nil
-//            let string = nullable!
-//            print(string)
-//        }, { exception in
-//            print(exception)
-//        })
+        let exception = OCEException.catching {
+            let nullable: String? = nil
+            let s = nullable!
+            print(s)
+        }
+        if let exception = exception {
+            print("Swift caught: \(exception.name.rawValue) — \(exception.reason ?? "")")
+        }
     }
 }
