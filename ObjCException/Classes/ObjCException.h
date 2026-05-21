@@ -72,6 +72,17 @@ extern "C" {
 // unwinder, so C++ destructors and @finally blocks run on the unwind path.
 // They are NOT safe to call from Swift on ARM64 device builds: the unwinder
 // cannot reliably propagate through Swift frames there.
+//
+// Caveat: the C++ unwinder needs to resume from the saved signal context.
+// For *queued* signals (raise(), abort()) the saved PC is at a clean
+// function-return point and unwinding works. For *instruction-fault*
+// signals (SIGSEGV from null deref, SIGBUS from misaligned access, SIGILL
+// from a bad instruction), the saved PC is mid-instruction and the
+// unwinder may fail to find a landing pad on some platforms (observed on
+// iOS Simulator on Apple Silicon). For those, prefer the OCEException
+// class above — siglongjmp doesn't unwind, it just restores SP/PC, so it
+// handles instruction-fault signals reliably across all supported
+// platforms.
 
 // `OCE_FORCE_UNWIND_TABLES` is load-bearing for code generation. It forces
 // clang to emit Itanium-ABI unwind tables for the surrounding function;

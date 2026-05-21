@@ -11,6 +11,7 @@
 #import <ObjCException/ObjCException.h>
 
 #include <atomic>
+#include <pthread.h>
 #include <signal.h>
 
 #pragma mark - C++ destructor probe
@@ -187,6 +188,119 @@ struct DestructorProbe {
     }];
     XCTAssertNotNil(outerE);
     XCTAssertEqualObjects(@"OuterEx", outerE.name);
+}
+
+#pragma mark - Cross-tier nesting
+
+// Outer = oce_try_catch (cpp_throw), inner = OCEException.catching (longjmp_).
+// Inner consumes the signal via siglongjmp; outer's catch must NOT fire.
+- (void)testCrossTier_cppOuter_longjmpInner_signalCaughtByInner {
+    OCE_FORCE_UNWIND_TABLES
+    __block NSException *innerE = nil;
+    __block NSException *outerE = nil;
+    __block BOOL outerBodyCompleted = NO;
+    oce_try_catch(^{
+        innerE = [OCEException catching:^{
+            volatile int *p = (volatile int *)0;
+            *p = 1;
+        }];
+        outerBodyCompleted = YES;
+    }, ^(NSException *e) {
+        outerE = e;
+    });
+    XCTAssertNotNil(innerE);
+    XCTAssertEqualObjects(@"SIGSEGV", innerE.name);
+    XCTAssertNil(outerE);
+    XCTAssertTrue(outerBodyCompleted);
+}
+
+// Outer = oce_try_catch (cpp_throw), inner = OCEException.catching (longjmp_).
+// Inner runs clean; outer raises an NSException afterwards — outer's @catch
+// should fire, proving the cpp_throw frame is still on top after inner pops.
+- (void)testCrossTier_cppOuter_longjmpInner_outerRaisesAfter {
+    OCE_FORCE_UNWIND_TABLES
+    __block NSException *outerE = nil;
+    oce_try_catch(^{
+        NSException *innerE = [OCEException catching:^{
+            // clean
+        }];
+        XCTAssertNil(innerE);
+        [NSException raise:@"FromOuterTier" format:@"x"];
+    }, ^(NSException *e) {
+        outerE = e;
+    });
+    XCTAssertNotNil(outerE);
+    XCTAssertEqualObjects(@"FromOuterTier", outerE.name);
+}
+
+// Outer = OCEException.catching (longjmp_), inner = oce_try_catch (cpp_throw).
+// Inner catches the signal via objc_exception_throw + C++ unwinder; outer's
+// catching should return nil because no exception escapes inner.
+//
+// Uses pthread_kill(SIGABRT) rather than volatile null deref because the
+// cpp_throw tier needs the unwinder to resume from a clean PC (return from
+// the kill syscall), not the middle of an instruction fault. raise(SIGABRT)
+// would also yield a clean PC, but on iOS Simulator on Apple Silicon it goes
+// through __kill(getpid()) and the kernel can deliver to a thread with no
+// active catch frame depending on cumulative signal traffic earlier in the
+// test run; pthread_kill is per-thread by definition.
+- (void)testCrossTier_longjmpOuter_cppInner_signalCaughtByInner {
+    OCE_FORCE_UNWIND_TABLES
+    // Defensive unblock: on iOS Simulator on Apple Silicon, prior tests in
+    // the suite that called raise(SIGABRT) leave the test thread's mask
+    // with SIGABRT blocked, even after the matching handler has finished.
+    // The likely cause is that raise(SIGABRT) is implemented as
+    // __kill(getpid(), SIGABRT) and the kernel's per-thread "currently
+    // delivering" state is sticky on threads that didn't actually run the
+    // handler. siglongjmp / explicit sigprocmask in the handler can only
+    // fix the thread that ran it. Every test that pthread_kill's a signal
+    // it expects the library to catch must unblock it explicitly first.
+    sigset_t unblock_set;
+    sigemptyset(&unblock_set);
+    sigaddset(&unblock_set, SIGABRT);
+    pthread_sigmask(SIG_UNBLOCK, &unblock_set, NULL);
+
+    __block NSException *innerE = nil;
+    __block BOOL outerBodyCompleted = NO;
+    NSException *outerE = [OCEException catching:^{
+        oce_try_catch(^{
+            pthread_kill(pthread_self(), SIGABRT);
+        }, ^(NSException *e) {
+            innerE = e;
+        });
+        outerBodyCompleted = YES;
+    }];
+    XCTAssertNotNil(innerE);
+    XCTAssertEqualObjects(@"SIGABRT", innerE.name);
+    XCTAssertNil(outerE);
+    XCTAssertTrue(outerBodyCompleted);
+}
+
+// Cross-tier C++ destructor semantics: an RAII object declared in the OUTER
+// cpp_throw scope (around an inner longjmp_ frame) still gets destructed
+// when the outer scope exits normally — siglongjmp's lack of unwind in the
+// inner frame doesn't affect the outer scope's automatic storage.
+- (void)testCrossTier_cppOuter_longjmpInner_outerScopeDestructorRuns {
+    OCE_FORCE_UNWIND_TABLES
+    std::atomic<int> dtorCount{0};
+    std::atomic<int> *dtorCountPtr = &dtorCount;
+    __block NSException *innerE = nil;
+
+    oce_try_catch(^{
+        DestructorProbe outerProbe(dtorCountPtr);
+        innerE = [OCEException catching:^{
+            volatile int *p = (volatile int *)0;
+            *p = 1;
+        }];
+        // outerProbe destructs at scope exit, regardless of inner's signal path
+    }, ^(NSException *e) {
+        // not expected to fire
+        XCTFail(@"outer catch should not run");
+    });
+
+    XCTAssertNotNil(innerE);
+    XCTAssertEqualObjects(@"SIGSEGV", innerE.name);
+    XCTAssertEqual(1, dtorCount.load(std::memory_order_relaxed));
 }
 
 #pragma mark - Tier 1: handler callback
