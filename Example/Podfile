@@ -1,7 +1,13 @@
 use_frameworks!
 
 platform :ios, '12.0'
+install! 'cocoapods', warn_for_unused_master_specs_repo: false
 
 target 'ObjCException_Example' do
   pod 'ObjCException', :path => '../'
+
+  target 'ObjCException_Tests' do
+    inherit! :search_paths
+    pod 'ObjCException', :path => '../'
+  end
 end

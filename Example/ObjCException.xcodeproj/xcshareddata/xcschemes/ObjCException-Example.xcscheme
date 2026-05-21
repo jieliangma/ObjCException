@@ -1,97 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Scheme
-   LastUpgradeVersion = "1630"
-   version = "1.3">
-   <BuildAction
-      parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+<?xml version='1.0' encoding='UTF-8'?>
+<Scheme LastUpgradeVersion='1630' version='1.3'>
+   <BuildAction buildImplicitDependencies='YES' parallelizeBuildables='YES'>
       <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6003F589195388D20070C39A"
-               BuildableName = "ObjCException_Example.app"
-               BlueprintName = "ObjCException_Example"
-               ReferencedContainer = "container:ObjCException.xcodeproj">
+         <BuildActionEntry buildForAnalyzing='YES' buildForArchiving='YES' buildForProfiling='YES' buildForRunning='YES' buildForTesting='YES'>
+            <BuildableReference BlueprintIdentifier='6003F589195388D20070C39A' BlueprintName='ObjCException_Example' BuildableIdentifier='primary' BuildableName='ObjCException_Example.app' ReferencedContainer='container:ObjCException.xcodeproj'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
-   <TestAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+   <TestAction buildConfiguration='Debug' selectedDebuggerIdentifier='Xcode.DebuggerFoundation.Debugger.LLDB' selectedLauncherIdentifier='Xcode.DebuggerFoundation.Launcher.LLDB' shouldUseLaunchSchemeArgsEnv='YES'>
       <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "ObjCException_Example.app"
-            BlueprintName = "ObjCException_Example"
-            ReferencedContainer = "container:ObjCException.xcodeproj">
+         <BuildableReference BlueprintIdentifier='6003F589195388D20070C39A' BlueprintName='ObjCException_Example' BuildableIdentifier='primary' BuildableName='ObjCException_Example.app' ReferencedContainer='container:ObjCException.xcodeproj'>
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6003F5AD195388D20070C39A"
-               BuildableName = "ObjCException_Tests.xctest"
-               BlueprintName = "ObjCException_Tests"
-               ReferencedContainer = "container:ObjCException.xcodeproj">
+         <TestableReference skipped='NO'>
+            <BuildableReference BlueprintIdentifier='91C76EF8E99FBF123C7DA56A' BlueprintName='ObjCException_Tests' BuildableIdentifier='primary' BuildableName='ObjCException_Tests.xctest' ReferencedContainer='container:ObjCException.xcodeproj'>
             </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>
-   <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
-      launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
-      ignoresPersistentStateOnLaunch = "NO"
-      debugDocumentVersioning = "YES"
-      debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "ObjCException_Example.app"
-            BlueprintName = "ObjCException_Example"
-            ReferencedContainer = "container:ObjCException.xcodeproj">
+   <LaunchAction allowLocationSimulation='YES' buildConfiguration='Debug' debugDocumentVersioning='YES' debugServiceExtension='internal' ignoresPersistentStateOnLaunch='NO' launchStyle='0' selectedDebuggerIdentifier='' selectedLauncherIdentifier='Xcode.IDEFoundation.Launcher.PosixSpawn' useCustomWorkingDirectory='NO'>
+      <BuildableProductRunnable runnableDebuggingMode='0'>
+         <BuildableReference BlueprintIdentifier='6003F589195388D20070C39A' BlueprintName='ObjCException_Example' BuildableIdentifier='primary' BuildableName='ObjCException_Example.app' ReferencedContainer='container:ObjCException.xcodeproj'>
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
-   <ProfileAction
-      buildConfiguration = "Release"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
-      useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "ObjCException_Example.app"
-            BlueprintName = "ObjCException_Example"
-            ReferencedContainer = "container:ObjCException.xcodeproj">
+   <ProfileAction buildConfiguration='Release' debugDocumentVersioning='YES' savedToolIdentifier='' shouldUseLaunchSchemeArgsEnv='YES' useCustomWorkingDirectory='NO'>
+      <BuildableProductRunnable runnableDebuggingMode='0'>
+         <BuildableReference BlueprintIdentifier='6003F589195388D20070C39A' BlueprintName='ObjCException_Example' BuildableIdentifier='primary' BuildableName='ObjCException_Example.app' ReferencedContainer='container:ObjCException.xcodeproj'>
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
-   <AnalyzeAction
-      buildConfiguration = "Debug">
+   <AnalyzeAction buildConfiguration='Debug'>
    </AnalyzeAction>
-   <ArchiveAction
-      buildConfiguration = "Release"
-      revealArchiveInOrganizer = "YES">
+   <ArchiveAction buildConfiguration='Release' revealArchiveInOrganizer='YES'>
    </ArchiveAction>
 </Scheme>
